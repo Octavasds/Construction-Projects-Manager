@@ -22,4 +22,4 @@ This application helps the construction companies to manage their projects. It c
 7. **Visualize Projects** Shows a project's data, like workers, the engineer, and the manager.
 8. **Unallocated Employees** Shows the employees that are not allocated to any project.
 
-![alt text](https://github.com/Octavasds/Construction-Projects-Manager/blob/main/image.png)
+![alt text](https://github.com/Octavasds/Construction-Projects-Manager/blob/main/Screenshot%202024-10-28%20162239.png)
