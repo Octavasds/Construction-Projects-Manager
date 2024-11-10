@@ -56,5 +56,9 @@ public class Client {
     public void setContracts(List<Contract> contracts) {
         this.contracts = contracts;
     }
+
+    public void addContract(Contract contract) {
+        this.contracts.add(contract);
+    }
 }
 
