@@ -16,7 +16,14 @@ public class ProjectService {
     private IRepository<Client> clientRepository;
     private Inventory inventory;
 
-    // Existing constructor
+    /**
+     * Description: Constructor
+     * @param projectRepository
+     * @param employeeRepository
+     * @param materialRepository
+     * @param clientRepository
+     * @param inventory
+     */
     public ProjectService(IRepository<Project> projectRepository, IRepository<Employee> employeeRepository, IRepository<Material> materialRepository, IRepository<Client> clientRepository,Inventory inventory) {
         this.projectRepository = projectRepository;
         this.employeeRepository = employeeRepository;
@@ -25,7 +32,10 @@ public class ProjectService {
         this.inventory = inventory;
     }
 
-    // Method to add a project
+    /**
+     * Description: Adds a new project
+     * @param project
+     */
     public void addProject(Project project) {
         if (validateEmployeeAllocation(project.getEmployees()) && validateMaterialAllocation(project.getMaterials())) {
             projectRepository.add(project);
@@ -34,7 +44,10 @@ public class ProjectService {
         }
     }
 
-    // Method to delete a project
+    /**
+     * Description: Deletes an existent project
+     * @param projectId
+     */
     public void deleteProject(int projectId) {
         Project project = projectRepository.getById(projectId);
         if (project != null) {
@@ -42,7 +55,11 @@ public class ProjectService {
         }
     }
 
-    // Validation method for employee allocation
+    /**
+     * Description: Validation method for employee allocation
+     * @param employees
+     * @return
+     */
     private boolean validateEmployeeAllocation(List<Employee> employees) {
         for (Employee employee : employees) {
             if (employee instanceof Engineer) {
@@ -60,7 +77,11 @@ public class ProjectService {
         return true;
     }
 
-    // Validation method for material allocation
+    /**
+     * Description: Validation method for material allocation
+     * @param materials
+     * @return
+     */
     private boolean validateMaterialAllocation(List<Material> materials) {
         for (Material material : materials) {
             if (!inventory.hasMaterial(material)) {
@@ -71,7 +92,15 @@ public class ProjectService {
         return true;
     }
 
-    // New method to update an existing project
+    /**
+     * Description: Method to update an existing project
+     * @param projectId
+     * @param name
+     * @param location
+     * @param beginDate
+     * @param finalDate
+     * @param budget
+     */
     public void updateProject(int projectId, String name, String location, Date beginDate, Date finalDate, float budget) {
         Project project = projectRepository.getById(projectId);
         if (project != null) {
@@ -87,7 +116,11 @@ public class ProjectService {
         }
     }
 
-    // Method to allocate an employee to a project
+    /**
+     * Description: Method to allocate an employee to a project
+     * @param projectId
+     * @param employeeId
+     */
     public void allocateEmployeeToProject(int projectId, int employeeId) {
         Project project = projectRepository.getById(projectId);
         Employee employee = employeeRepository.getById(employeeId);
@@ -105,7 +138,11 @@ public class ProjectService {
         }
     }
 
-    // Method to deallocate an employee from a project
+    /**
+     * Description: Method to deallocate an employee from a project
+     * @param projectId
+     * @param employeeId
+     */
     public void deallocateEmployeeFromProject(int projectId, int employeeId) {
         Project project = projectRepository.getById(projectId);
         Employee employee = employeeRepository.getById(employeeId);
@@ -122,7 +159,11 @@ public class ProjectService {
         }
     }
 
-    // Method to allocate materials to a project
+    /**
+     * Description: Method to allocate materials to a project
+     * @param projectId
+     * @param materials
+     */
     public void allocateMaterialsToProject(int projectId, List<Material> materials) {
         Project project = projectRepository.getById(projectId);
 
@@ -141,7 +182,11 @@ public class ProjectService {
         }
     }
 
-    // Method to update material inventory
+    /**
+     * Description: Method to update material inventory
+     * @param materialName
+     * @param quantity
+     */
     public void updateMaterialInventory(String materialName, int quantity) {
         for (Material material : inventory.getMaterials()) {
             if (material.getName().equals(materialName)) {
@@ -153,7 +198,10 @@ public class ProjectService {
         System.out.println("Error: Material not found in inventory.");
     }
 
-    // Method to generate a project report
+    /**
+     * Description: Generates all the information about a project
+     * @param projectId
+     */
     public void generateProjectReport(int projectId) {
         Project project = projectRepository.getById(projectId);
         if (project != null) {
@@ -177,6 +225,10 @@ public class ProjectService {
         }
     }
 
+    /**
+     * Description: Gets all existent projects
+     * @return Map with projects and their IDs
+     */
     public Map<Integer, Project> getAllProjects() {
         Map<Integer,Project> projects = new HashMap<>();
 
@@ -186,6 +238,11 @@ public class ProjectService {
         return projects;
     }
 
+    /**
+     * Description: Allocates a client to a project
+     * @param projectId
+     * @param clientId
+     */
     public void allocateClientToProject(int projectId, int clientId) {
         Project project = projectRepository.getById(projectId);
         Client client = clientRepository.getById(clientId);

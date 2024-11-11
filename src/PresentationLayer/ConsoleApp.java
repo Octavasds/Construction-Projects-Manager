@@ -24,7 +24,7 @@ public class ConsoleApp {
     public void run() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("1. Add Project\n2. Delete Project\n3. Update Project\n4. Allocate Employee\n5. Deallocate Employee\n6. Allocate Materials\n7. Update Material Inventory\n8. Generate Project Report\n9. Show Unallocated Employees\n10. Create Contract\n11. Create Client\n12. Create Material\n13. Create Engineer\n14. Create Worker\n15. Show All Projects\n16. Show All Employees\n17. Allocate Client\n18. Show Clients");
+            System.out.println("1. Add Project\n2. Delete Project\n3. Update Project\n4. Allocate Employee\n5. Deallocate Employee\n6. Allocate Materials\n7. Update Material Inventory\n8. Generate Project Report\n9. Show Unallocated Employees\n10. Create Contract\n11. Create Client\n12. Create Material\n13. Create Engineer\n14. Create Worker\n15. Show All Projects\n16. Show All Employees\n17. Allocate Client\n18. Show Clients\n19. Exit");
             int choice = scanner.nextInt();
 
             switch (choice) {
@@ -223,6 +223,8 @@ public class ConsoleApp {
                         System.out.println("- " + client.getKey() + " " + client.getValue().getName());
                     }
                     break;
+                case 19:
+                    return;
                 default:
                     System.out.println("Invalid option");
             }
