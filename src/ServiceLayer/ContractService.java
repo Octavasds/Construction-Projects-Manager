@@ -5,10 +5,20 @@ import RepositoryLayer.IRepository;
 public class ContractService {
     private IRepository<Contract> contractRepository;
 
+    /**
+     * Description: Constructor
+     * @param contractRepository
+     */
     public ContractService(IRepository<Contract> contractRepository) {
         this.contractRepository = contractRepository;
     }
 
+    /**
+     * Description: Creates a new Contract
+     * @param client
+     * @param project
+     * @param contractType
+     */
     public void createContract(Client client, Project project, String contractType) {
         Contract contract;
         if ("Construction".equals(contractType)) {

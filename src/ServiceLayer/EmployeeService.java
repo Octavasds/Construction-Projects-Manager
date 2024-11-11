@@ -7,10 +7,18 @@ import RepositoryLayer.IRepository;
 public class EmployeeService {
     private IRepository<Employee> employeeRepository;
 
+    /**
+     * Description: Constructor
+     * @param employeeRepository
+     */
     public EmployeeService(IRepository<Employee> employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 
+    /**
+     * Description: Gets all existent employees
+     * @return Map with employees and their IDs
+     */
     public Map<Integer,Employee> getAllEmployees() {
         Map<Integer,Employee> allEmployees = new HashMap<>();
 
@@ -20,6 +28,10 @@ public class EmployeeService {
         return allEmployees;
     }
 
+    /**
+     * Description: Gets all employees that are not allocated to a project
+     * @return Map with employees and their IDs
+     */
     public Map<Integer,Employee> getUnallocatedEmployees() {
         Map<Integer,Employee> unallocatedEmployees = new HashMap<>();
 
@@ -31,12 +43,28 @@ public class EmployeeService {
         return unallocatedEmployees;
     }
 
+    /**
+     * Description: Creates a new engineer
+     * @param lastName
+     * @param firstName
+     * @param role
+     * @param salary
+     * @param specialization
+     */
     public void createEngineer(String lastName, String firstName, String role, float salary, String specialization) {
         Engineer newEngineer = new Engineer(lastName, firstName, role, salary, new ArrayList<>(), specialization);
         employeeRepository.add(newEngineer);
         System.out.println("Engineer created successfully: " + newEngineer.getFirstName() + " " + newEngineer.getLastName());
     }
 
+    /**
+     * Description: Creates a new worker
+     * @param lastName
+     * @param firstName
+     * @param role
+     * @param salary
+     * @param experienceLevel
+     */
     public void createWorker(String lastName, String firstName, String role, float salary, String experienceLevel) {
         Worker newWorker = new Worker(lastName, firstName, role, salary, new ArrayList<>(), experienceLevel);
         employeeRepository.add(newWorker);
