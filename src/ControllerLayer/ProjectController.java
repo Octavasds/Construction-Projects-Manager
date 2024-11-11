@@ -6,10 +6,20 @@ import java.util.Date;
 import java.util.List;
 
 public class ProjectController {
-    private ControllerLayer.ProjectService projectService;
+    private ProjectService projectService;
 
-    public ProjectController(ControllerLayer.ProjectService projectService) {
+    public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
+    }
+
+    //Method for adding a new project
+    public void addProject(Project project) {
+        projectService.addProject(project);
+    }
+
+    // Method for deleting an existing project
+    public  void deleteProject(int projectId) {
+        projectService.deleteProject(projectId);
     }
 
     // Method to update an existing project
