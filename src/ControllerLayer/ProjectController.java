@@ -1,9 +1,12 @@
 package ControllerLayer;
+import ModelLayer.Employee;
 import ModelLayer.Material;
 import ServiceLayer.*;
 import ModelLayer.Project;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProjectController {
     private ProjectService projectService;
@@ -42,6 +45,9 @@ public class ProjectController {
         projectService.allocateMaterialsToProject(projectId, materials);
     }
 
+    public void allocateClientToProject(int projectId, int clientId){
+        projectService.allocateClientToProject(projectId,clientId);
+    }
     // Method to update material inventory
     public void updateMaterialInventory(String materialName, int quantity) {
         projectService.updateMaterialInventory(materialName, quantity);
@@ -50,5 +56,9 @@ public class ProjectController {
     // Method to generate a project report
     public void generateProjectReport(int projectId) {
         projectService.generateProjectReport(projectId);
+    }
+
+    public Map<Integer,Project> getAllProjects() {
+        return projectService.getAllProjects();
     }
 }

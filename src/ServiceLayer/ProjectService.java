@@ -4,20 +4,24 @@ import RepositoryLayer.IRepository;
 import ServiceLayer.*;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProjectService {
     // Existing attributes
     private IRepository<Project> projectRepository;
     private IRepository<Employee> employeeRepository;
     private IRepository<Material> materialRepository;
+    private IRepository<Client> clientRepository;
     private Inventory inventory;
 
     // Existing constructor
-    public ProjectService(IRepository<Project> projectRepository, IRepository<Employee> employeeRepository, IRepository<Material> materialRepository, Inventory inventory) {
+    public ProjectService(IRepository<Project> projectRepository, IRepository<Employee> employeeRepository, IRepository<Material> materialRepository, IRepository<Client> clientRepository,Inventory inventory) {
         this.projectRepository = projectRepository;
         this.employeeRepository = employeeRepository;
         this.materialRepository = materialRepository;
+        this.clientRepository = clientRepository;
         this.inventory = inventory;
     }
 
@@ -170,6 +174,28 @@ public class ProjectService {
             }
         } else {
             System.out.println("Error: Project not found.");
+        }
+    }
+
+    public Map<Integer, Project> getAllProjects() {
+        Map<Integer,Project> projects = new HashMap<>();
+
+        for (Project project : projectRepository.getAll()) {
+                projects.put(projectRepository.getID(project),project);
+        }
+        return projects;
+    }
+
+    public void allocateClientToProject(int projectId, int clientId) {
+        Project project = projectRepository.getById(projectId);
+        Client client = clientRepository.getById(clientId);
+
+        if (project != null && client != null) {
+            project.setClient(client);
+            projectRepository.update(projectId, project);
+            System.out.println("Client " + client.getName() + " has been successfully allocated to project " + project.getName());
+        } else {
+            System.out.println("Error: Project or Client not found.");
         }
     }
 }

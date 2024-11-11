@@ -28,5 +28,14 @@ public class InMemoryRepository<T> implements IRepository<T> {
     public T getById(int id) {
         return storage.get(id);
     }
+
+    public Integer getID(T entity){
+        for (Map.Entry<Integer, T> entry : storage.entrySet()) {
+            if (entry.getValue().equals(entity)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
 }
 
