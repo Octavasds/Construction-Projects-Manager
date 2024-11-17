@@ -3,10 +3,7 @@ import ModelLayer.*;
 import RepositoryLayer.IRepository;
 import ServiceLayer.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ProjectService {
     // Existing attributes
@@ -255,5 +252,22 @@ public class ProjectService {
             System.out.println("Error: Project or Client not found.");
         }
     }
+    //Sorts project by budget
+    public List<Project> sortProjectsByBudget() {
+        List<Project> projects = new ArrayList<>(projectRepository.getAll());
+        projects.sort((p1, p2) -> Float.compare(p2.getBudget(), p1.getBudget()));
+        return projects;
+    }
+    //Shows projects that have already begun from a specific date
+    public List<Project> filterProjectsByStartDate(Date minDate) {
+        List<Project> filteredProjects = new ArrayList<>();
+        for (Project project : projectRepository.getAll()) {
+            if (project.getBeginDate().after(minDate) || project.getBeginDate().equals(minDate)) {
+                filteredProjects.add(project);
+            }
+        }
+        return filteredProjects;
+    }
+
 }
 
