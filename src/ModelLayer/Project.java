@@ -1,7 +1,11 @@
 package ModelLayer;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Project {
     private String name;
@@ -86,6 +90,15 @@ public class Project {
 
     public void setMaterials(List<Material> materials) {
         this.materials = materials;
+    }
+
+    public String toString() {
+        return this.name+','+this.location+','+this.beginDate+','+this.finalDate+','+this.budget;
+    }
+
+    public static Project fromString(String line) {
+        String[] parts = line.split(",");
+        return new Project(parts[0], parts[1],zonedDateTime,Date.parse(parts[3]),Float.parseFloat(parts[4]),null,null,null);
     }
 }
 

@@ -34,5 +34,7 @@ public abstract class Contract {
     public void setClient(Client client) {
         this.client = client;
     }
+
+
 }
 

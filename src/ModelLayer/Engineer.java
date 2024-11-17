@@ -17,4 +17,13 @@ public class Engineer extends Employee {
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
     }
+
+    public String toString() {
+        return this.getLastName() +','+ this.getFirstName() +','+ this.getRole() +','+ this.getSalary() +','+this.specialization;
+    }
+
+    public static Engineer fromString(String line) {
+        String[] parts = line.split(",");
+        return new Engineer(parts[0], parts[1],parts[2],Float.parseFloat(parts[3]),null,parts[4]);
+    }
 }

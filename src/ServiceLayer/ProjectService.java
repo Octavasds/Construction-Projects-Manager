@@ -129,6 +129,7 @@ public class ProjectService {
             if (employee.getProjects().isEmpty()) {
                 project.getEmployees().add(employee);
                 employee.getProjects().add(project);
+                employeeRepository.update(employeeId,employee);
                 System.out.println("Employee allocated successfully.");
             } else {
                 System.out.println("Error: Employee is already assigned to another project.");
@@ -150,6 +151,7 @@ public class ProjectService {
         if (project != null && employee != null) {
             if (project.getEmployees().remove(employee)) {
                 employee.getProjects().remove(project);
+                employeeRepository.update(employeeId,employee);
                 System.out.println("Employee deallocated successfully.");
             } else {
                 System.out.println("Error: Employee not assigned to this project.");

@@ -56,5 +56,6 @@ public abstract class Employee {
     public void setProjects(List<Project> projects) {
         this.projects = projects;
     }
+
 }
 

@@ -60,5 +60,14 @@ public class Client {
     public void addContract(Contract contract) {
         this.contracts.add(contract);
     }
+
+    public String toString() {
+        return this.name+','+this.address+','+this.email+','+this.phone;
+    }
+
+    public static Client fromString(String line) {
+        String[] parts = line.split(",");
+        return new Client(parts[0], parts[1],parts[2],parts[3],null);
+    }
 }
 

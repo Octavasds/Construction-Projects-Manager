@@ -17,4 +17,13 @@ public class Worker extends Employee {
     public void setExperienceLevel(String experienceLevel) {
         this.experienceLevel = experienceLevel;
     }
+
+    public String toString() {
+        return this.getLastName() +','+ this.getFirstName() +','+ this.getRole() +','+ this.getSalary() +','+this.experienceLevel;
+    }
+
+    public static Worker fromString(String line) {
+        String[] parts = line.split(",");
+        return new Worker(parts[0], parts[1],parts[2],Float.parseFloat(parts[3]),null,parts[4]);
+    }
 }
