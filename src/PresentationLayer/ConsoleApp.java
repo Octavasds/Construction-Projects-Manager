@@ -24,7 +24,7 @@ public class ConsoleApp {
     public void run() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("1. Add Project\n2. Delete Project\n3. Update Project\n4. Allocate Employee\n5. Deallocate Employee\n6. Allocate Materials\n7. Update Material Inventory\n8. Generate Project Report\n9. Show Unallocated Employees\n10. Create Contract\n11. Create Client\n12. Create Material\n13. Create Engineer\n14. Create Worker\n15. Show All Projects\n16. Show All Employees\n17. Allocate Client\n18. Show Clients\n19. Exit");
+            System.out.println("1. Add Project\n2. Delete Project\n3. Update Project\n4. Allocate Employee\n5. Deallocate Employee\n6. Allocate Materials\n7. Update Material Inventory\n8. Generate Project Report\n9. Show Unallocated Employees\n10. Create Contract\n11. Create Client\n12. Create Material\n13. Create Engineer\n14. Create Worker\n15. Show All Projects\n16. Show All Employees\n17. Allocate Client\n18. Show Clients\n19. Sort projects by price\n20. Sort workers by experience level\n21. Exit");
             int choice = scanner.nextInt();
 
             switch (choice) {
@@ -224,6 +224,22 @@ public class ConsoleApp {
                     }
                     break;
                 case 19:
+                    // Sort Projects by Budget
+                    List<Project> sortedProjectsByBudget = projectController.sortProjectsByBudget();
+                    System.out.println("Projects sorted by Budget:");
+                    for (Project project : sortedProjectsByBudget) {
+                        System.out.println("- " + project.getName() + " (Budget: " + project.getBudget() + ")");
+                    }
+                    break;
+                case 20:
+                    // Sort Employees by Experience
+                    List<Worker> sortedWorkers = employeeController.sortEmployeesByExperience();
+                    System.out.println("Workers sorted by Experience:");
+                    for (Worker worker : sortedWorkers) {
+                        System.out.println("- " + worker.getFirstName() + " " + worker.getLastName() + " (Experience Level: " + worker.getExperienceLevel() + ")");
+                    }
+                    break;
+                case 21:
                     return;
                 default:
                     System.out.println("Invalid option");
