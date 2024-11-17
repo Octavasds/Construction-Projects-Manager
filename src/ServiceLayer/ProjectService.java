@@ -248,7 +248,6 @@ public class ProjectService {
         Project project = projectRepository.getById(projectId);
         Client client = clientRepository.getById(clientId);
         clientRepository.update(clientId,client);
-        projectRepository.update(projectId,project);
         if (project != null && client != null) {
             project.setClient(client);
             projectRepository.update(projectId, project);

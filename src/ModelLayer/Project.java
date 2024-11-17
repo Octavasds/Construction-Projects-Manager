@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class Project {
     private String name;
@@ -102,8 +103,12 @@ public class Project {
         else
         {
             IRepository<Client> clientRepository= new FileRepository<>("clients.txt", new ClientParser());
-            System.out.println(clientRepository.getID(this.client));
-            return this.name+','+this.location+','+this.beginDate+','+this.finalDate+','+this.budget+','+clientRepository.getID(this.client);
+            List<Client> cls= clientRepository.getAll();
+            int id=1;
+            for(Client cl:cls)
+                if(Objects.equals(cl.getName(), client.getName()))
+                    id=clientRepository.getID(cl);
+            return this.name+','+this.location+','+this.beginDate+','+this.finalDate+','+this.budget+','+ id;
         }
     }
 
