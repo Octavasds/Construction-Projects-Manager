@@ -2,7 +2,7 @@ package ModelLayer;
 
 import java.util.List;
 
-public abstract class Employee {
+public class Employee {
     private String lastName;
     private String firstName;
     private String role;

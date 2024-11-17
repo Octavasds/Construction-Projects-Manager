@@ -93,7 +93,7 @@ public class FileRepository<T> implements IRepository<T> {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",", 2);
+                String[] parts = line.split(";", 2);
                 int id = Integer.parseInt(parts[0]);
                 T entity = parser.fromString(parts[1]);
                 storage.put(id, entity);

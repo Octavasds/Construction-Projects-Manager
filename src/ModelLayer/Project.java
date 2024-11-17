@@ -1,11 +1,15 @@
 package ModelLayer;
 
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import Parser.ClientParser;
+import Parser.EntityParser;
+import RepositoryLayer.FileRepository;
+import RepositoryLayer.IRepository;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class Project {
     private String name;
@@ -93,12 +97,33 @@ public class Project {
     }
 
     public String toString() {
-        return this.name+','+this.location+','+this.beginDate+','+this.finalDate+','+this.budget;
+        if (this.client==null)
+            return this.name+','+this.location+','+this.beginDate+','+this.finalDate+','+this.budget;
+        else
+        {
+            IRepository<Client> clientRepository= new FileRepository<>("clients.txt", new ClientParser());
+            System.out.println(clientRepository.getID(this.client));
+            return this.name+','+this.location+','+this.beginDate+','+this.finalDate+','+this.budget+','+clientRepository.getID(this.client);
+        }
     }
 
     public static Project fromString(String line) {
+        IRepository<Client> clientRepository= new FileRepository<>("clients.txt", new ClientParser());
         String[] parts = line.split(",");
-        return new Project(parts[0], parts[1],zonedDateTime,Date.parse(parts[3]),Float.parseFloat(parts[4]),null,null,null);
+        Client cl=null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date1 = new Date(0,0,0);
+        Date date2 = new Date(0,0,0);
+        try {
+            date1 = dateFormat.parse(parts[2]);
+            date2 = dateFormat.parse(parts[3]);
+        } catch (ParseException e) {
+            System.err.println("Invalid date format: " + e.getMessage());}
+        if(parts.length > 5 && parts[5] != null && !parts[5].isEmpty())
+            cl= clientRepository.getById(Integer.parseInt(parts[5]));
+        List<Employee> emps= new ArrayList<>();
+        List<Material> mats=new ArrayList<>();
+        return new Project(parts[0], parts[1],date1,date2,Float.parseFloat(parts[4]),cl,emps,mats);
     }
 }
 

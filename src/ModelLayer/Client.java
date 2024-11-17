@@ -1,5 +1,6 @@
 package ModelLayer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Client {
@@ -67,7 +68,8 @@ public class Client {
 
     public static Client fromString(String line) {
         String[] parts = line.split(",");
-        return new Client(parts[0], parts[1],parts[2],parts[3],null);
+        List<Contract> contracts = new ArrayList<>();
+        return new Client(parts[0], parts[1],parts[2],parts[3],contracts);
     }
 }
 

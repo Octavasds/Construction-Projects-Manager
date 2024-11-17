@@ -1,5 +1,6 @@
 package ModelLayer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Engineer extends Employee {
@@ -24,6 +25,7 @@ public class Engineer extends Employee {
 
     public static Engineer fromString(String line) {
         String[] parts = line.split(",");
-        return new Engineer(parts[0], parts[1],parts[2],Float.parseFloat(parts[3]),null,parts[4]);
+        List<Project> projects=new ArrayList<>();
+        return new Engineer(parts[0], parts[1],parts[2],Float.parseFloat(parts[3]),projects,parts[4]);
     }
 }

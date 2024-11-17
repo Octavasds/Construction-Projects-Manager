@@ -1,5 +1,7 @@
 import ControllerLayer.*;
 import ModelLayer.*;
+import Parser.*;
+import RepositoryLayer.FileRepository;
 import RepositoryLayer.InMemoryRepository;
 import ServiceLayer.*;
 import PresentationLayer.ConsoleApp;
@@ -14,13 +16,16 @@ public class Main {
         InMemoryRepository<Project> projectRepository = new InMemoryRepository<>();
         InMemoryRepository<Employee> employeeRepository = new InMemoryRepository<>();
         InMemoryRepository<Material> materialRepository = new InMemoryRepository<>();
+        FileRepository<Client> clientFileRepository = new FileRepository<>("clients.txt",new ClientParser());
+        FileRepository<Employee> employeeFileRepository = new FileRepository<>("employees.txt", new EmployeeParser());
+        FileRepository<Project> projectFileRepository = new FileRepository<>("projects.txt", new ProjectParser());
 
         // Services
         List<Material> materials= new ArrayList<Material>();
         Inventory inventory = new Inventory(materials);
-        ClientService clientService = new ClientService(clientRepository);
-        ProjectService projectService = new ProjectService(projectRepository, employeeRepository, materialRepository, clientRepository,inventory);
-        EmployeeService employeeService = new EmployeeService(employeeRepository);
+        ClientService clientService = new ClientService(clientFileRepository);
+        ProjectService projectService = new ProjectService(projectFileRepository, employeeFileRepository, materialRepository, clientFileRepository,inventory);
+        EmployeeService employeeService = new EmployeeService(employeeFileRepository);
         MaterialService materialService = new MaterialService(materialRepository);
 
         // Controllers
