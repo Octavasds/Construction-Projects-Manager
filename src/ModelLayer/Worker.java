@@ -24,29 +24,34 @@ public class Worker extends Employee {
     }
 
     public String toString() {
-        IRepository<Project> projectIRepository = new FileRepository<>("projects.txt", new ProjectParser());
         StringBuilder ids= new StringBuilder();
         if(!this.getProjects().isEmpty()) {
+            IRepository<Project> projectIRepository = new FileRepository<>("projects.txt", new ProjectParser());
+            List<Project> allpr=projectIRepository.getAll();
             for (Project pr : getProjects())
-                ids.append(projectIRepository.getID(pr)).append(',');
+                for(Project por:allpr)
+                    if(pr.getName().equals(por.getName()))
+                        ids.append(projectIRepository.getID(por)).append(',');
             return this.getLastName() +','+ this.getFirstName() +','+ this.getRole() +','+ this.getSalary() +','+this.experienceLevel+','+ids;
         }
         return this.getLastName() +','+ this.getFirstName() +','+ this.getRole() +','+ this.getSalary() +','+this.experienceLevel;
     }
 
     public static Worker fromString(String line) {
-        IRepository<Project> projectIRepository = new FileRepository<>("projects.txt", new ProjectParser());
+
         String[] parts = line.split(",");
         List<Project> projects=new ArrayList<>();
         String aux;
         int ct;
         if(parts.length > 5 && parts[5] != null && !parts[5].isEmpty())
         {
+            IRepository<Project> projectIRepository = new FileRepository<>("projects.txt", new ProjectParser());
             ct=5;
             while(ct<parts.length) {
                 projects.add(projectIRepository.getById(Integer.parseInt(parts[ct])));
                 ct++;
             }
+            projectIRepository=null;
         }
         return new Worker(parts[0], parts[1],parts[2],Float.parseFloat(parts[3]),projects,parts[4]);
     }

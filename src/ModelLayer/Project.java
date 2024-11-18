@@ -1,6 +1,7 @@
 package ModelLayer;
 
 import Parser.ClientParser;
+import Parser.EmployeeParser;
 import Parser.EntityParser;
 import RepositoryLayer.FileRepository;
 import RepositoryLayer.IRepository;
@@ -108,12 +109,26 @@ public class Project {
             for(Client cl:cls)
                 if(Objects.equals(cl.getName(), client.getName()))
                     id=clientRepository.getID(cl);
+            clientRepository=null;
+            if(!this.employees.isEmpty())
+            {
+                IRepository<Employee> employeeIRepository = new FileRepository<>("employees.txt",new EmployeeParser());
+                List<Employee> allem = employeeIRepository.getAll();
+                StringBuilder ids = new StringBuilder();
+                for(Employee emp:this.getEmployees())
+                    for(Employee e:allem)
+                        if(emp.getFirstName().equals(e.getFirstName()) && emp.getLastName().equals(e.getLastName()))
+                            ids.append(employeeIRepository.getID(e)).append(',');
+                employeeIRepository=null;
+                return this.name+','+this.location+','+this.beginDate+','+this.finalDate+','+this.budget+','+ id+','+ids;
+            }
             return this.name+','+this.location+','+this.beginDate+','+this.finalDate+','+this.budget+','+ id;
         }
     }
 
     public static Project fromString(String line) {
-        IRepository<Client> clientRepository= new FileRepository<>("clients.txt", new ClientParser());
+
+        List<Employee> allem = new ArrayList<>();
         String[] parts = line.split(",");
         Client cl=null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -125,10 +140,23 @@ public class Project {
         } catch (ParseException e) {
             System.err.println("Invalid date format: " + e.getMessage());}
         if(parts.length > 5 && parts[5] != null && !parts[5].isEmpty())
+        {
+            IRepository<Client> clientRepository= new FileRepository<>("clients.txt", new ClientParser());
             cl= clientRepository.getById(Integer.parseInt(parts[5]));
-        List<Employee> emps= new ArrayList<>();
+            clientRepository=null;
+        }
+        if(parts.length > 6 && parts[6] != null && !parts[6].isEmpty())
+        {
+            IRepository<Employee> employeeIRepository = new FileRepository<>("employees.txt",new EmployeeParser());
+            int ct=6;
+            while(ct<parts.length && !parts[ct].isEmpty())
+            {
+                allem.add(employeeIRepository.getById(Integer.parseInt(parts[ct])));
+                ct++;
+            }
+        }
         List<Material> mats=new ArrayList<>();
-        return new Project(parts[0], parts[1],date1,date2,Float.parseFloat(parts[4]),cl,emps,mats);
+        return new Project(parts[0], parts[1],date1,date2,Float.parseFloat(parts[4]),cl,allem,mats);
     }
 }
 

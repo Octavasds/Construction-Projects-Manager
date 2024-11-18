@@ -1,1 +1,2 @@
-0;sdad,dsf,sdgf,233.0,fdhgf
+0;Andrei,Marin,tehnician,4000.0,electrica
+1;Ion,Preda,zidar,49999.0,expert
