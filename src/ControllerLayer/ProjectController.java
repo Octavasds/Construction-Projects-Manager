@@ -1,4 +1,5 @@
 package ControllerLayer;
+import ModelLayer.Client;
 import ModelLayer.Employee;
 import ModelLayer.Material;
 import ServiceLayer.*;
@@ -60,5 +61,17 @@ public class ProjectController {
 
     public Map<Integer,Project> getAllProjects() {
         return projectService.getAllProjects();
+    }
+
+    public List<Project> sortProjectsByBudget() {
+        return projectService.sortProjectsByBudget();
+    }
+
+    public List<Project> filterProjectsByStartDate(Date minDate) {
+        return projectService.filterProjectsByStartDate(minDate);
+    }
+
+    public boolean isClientAndEmployeeOnSameProject(Client client, Employee employee, Project project) {
+        return projectService.isClientAndEmployeeOnSameProject(client, employee, project);
     }
 }

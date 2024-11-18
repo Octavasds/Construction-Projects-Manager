@@ -262,7 +262,12 @@ public class ProjectService {
         projects.sort((p1, p2) -> Float.compare(p2.getBudget(), p1.getBudget()));
         return projects;
     }
-    //Shows projects that have already begun from a specific date
+
+    /**
+     * Shows projects that have already begun from a specific date
+     * @param minDate
+     * @return
+     */
     public List<Project> filterProjectsByStartDate(Date minDate) {
         List<Project> filteredProjects = new ArrayList<>();
         for (Project project : projectRepository.getAll()) {
@@ -271,6 +276,21 @@ public class ProjectService {
             }
         }
         return filteredProjects;
+    }
+
+    /**
+     * It checks if a client and employee are on the same project
+     * @param client
+     * @param employee
+     * @param project
+     * @return
+     */
+    public boolean isClientAndEmployeeOnSameProject(Client client, Employee employee, Project project) {
+        // Verificăm dacă proiectul are atât clientul, cât și angajatul specificat
+        boolean clientMatches = project.getClient() != null && project.getClient().equals(client);
+        boolean employeeMatches = project.getEmployees().contains(employee);
+
+        return clientMatches && employeeMatches;
     }
 
 }

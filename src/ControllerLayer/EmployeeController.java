@@ -1,5 +1,6 @@
 package ControllerLayer;
 import ModelLayer.Employee;
+import ModelLayer.Worker;
 import ServiceLayer.EmployeeService;
 
 import java.util.List;
@@ -25,6 +26,10 @@ public class EmployeeController {
 
     public Map<Integer,Employee> getAllEmployees() {
         return employeeService.getAllEmployees();
+    }
+
+    public List<Worker> sortEmployeesByExperience() {
+        return employeeService.sortEmployeesByExperience();
     }
 }
 

@@ -24,7 +24,7 @@ public class ConsoleApp {
     public void run() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("1. Add Project\n2. Delete Project\n3. Update Project\n4. Allocate Employee\n5. Deallocate Employee\n6. Allocate Materials\n7. Update Material Inventory\n8. Generate Project Report\n9. Show Unallocated Employees\n10. Create Contract\n11. Create Client\n12. Create Material\n13. Create Engineer\n14. Create Worker\n15. Show All Projects\n16. Show All Employees\n17. Allocate Client\n18. Show Clients\n19. Exit");
+            System.out.println("1. Add Project\n2. Delete Project\n3. Update Project\n4. Allocate Employee\n5. Deallocate Employee\n6. Allocate Materials\n7. Update Material Inventory\n8. Generate Project Report\n9. Show Unallocated Employees\n10. Create Contract\n11. Create Client\n12. Create Material\n13. Create Engineer\n14. Create Worker\n15. Show All Projects\n16. Show All Employees\n17. Allocate Client\n18. Show Clients\n19. Sort projects by price\n20. Sort workers by experience level\n21. Filter project by date\n22. Check if client and employee are on the same project \n23. Exit");
             int choice = scanner.nextInt();
 
             switch (choice) {
@@ -224,6 +224,53 @@ public class ConsoleApp {
                     }
                     break;
                 case 19:
+                    // Sort Projects by Budget
+                    List<Project> sortedProjectsByBudget = projectController.sortProjectsByBudget();
+                    System.out.println("Projects sorted by Budget:");
+                    for (Project project : sortedProjectsByBudget) {
+                        System.out.println("- " + project.getName() + " (Budget: " + project.getBudget() + ")");
+                    }
+                    break;
+                case 20:
+                    // Sort Employees by Experience
+                    List<Worker> sortedWorkers = employeeController.sortEmployeesByExperience();
+                    System.out.println("Workers sorted by Experience:");
+                    for (Worker worker : sortedWorkers) {
+                        System.out.println("- " + worker.getFirstName() + " " + worker.getLastName() + " (Experience Level: " + worker.getExperienceLevel() + ")");
+                    }
+                    break;
+                case 21:
+                    Date minDate=new Date(125,1,2);
+                    System.out.println(minDate);
+                    List<Project> prs= projectController.filterProjectsByStartDate(minDate);
+                    for(Project pr:prs)
+                        System.out.println(pr.getName()+' '+pr.getBeginDate());
+                    break;
+                case 22:
+                    System.out.println("Enter project ID:");
+                    int projectId = scanner.nextInt();
+                    System.out.println("Enter client ID:");
+                    int clientId= scanner.nextInt();
+                    System.out.println("Enter client ID:");
+                    int workerId= scanner.nextInt();
+                    Project auxP=null;
+                    Client auxCl=null;
+                    Employee auxW=null;
+                    Map<Integer,Project> allP= projectController.getAllProjects();
+                    for(int id:allP.keySet())
+                        if(id==projectId)
+                            auxP=allP.get(id);
+                    Map<Integer,Client> allCl=clientController.getAllClients();
+                    for(int id:allCl.keySet())
+                        if(id==clientId)
+                            auxCl=allCl.get(id);
+                    Map<Integer,Employee> allW=employeeController.getAllEmployees();
+                    for(int id:allW.keySet())
+                        if(id==workerId)
+                            auxW=allW.get(id);
+                    System.out.println(projectController.isClientAndEmployeeOnSameProject(auxCl,auxW,auxP));
+                    break;
+                case 23:
                     return;
                 default:
                     System.out.println("Invalid option");

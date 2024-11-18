@@ -1,1 +1,2 @@
-0;Aeroport Sibiu,Sibiu,2025-01-01,2026-01-01,1000.0
+0;Aeroport Sibiu,Sibiu,2025-01-01,2026-01-01,1000.0,0
+1;Autostrada,Cluj,2025-02-02,2026-03-03, 2000.0,0

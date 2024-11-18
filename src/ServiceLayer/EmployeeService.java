@@ -70,7 +70,11 @@ public class EmployeeService {
         employeeRepository.add(newWorker);
         System.out.println("Worker created successfully: " + newWorker.getFirstName() + " " + newWorker.getLastName());
     }
+    /**
+     *
+     * @return
     //Sorts the workes by the experience level
+    */
     public List<Worker> sortEmployeesByExperience() {
         List<Worker> workers = new ArrayList<>();
         for (Employee employee : employeeRepository.getAll()) {
