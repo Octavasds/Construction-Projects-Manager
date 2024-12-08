@@ -1,8 +1,6 @@
 package ServiceLayer;
-
 import ModelLayer.*;
 import RepositoryLayer.IRepository;
-import Exceptions.ValidationException;
 
 public class ContractService {
     private IRepository<Contract> contractRepository;
@@ -22,25 +20,12 @@ public class ContractService {
      * @param contractType
      */
     public void createContract(Client client, Project project, String contractType) {
-        // Validate inputs
-        if (client == null) {
-            throw new ValidationException("Client cannot be null.");
-        }
-        if (project == null) {
-            throw new ValidationException("Project cannot be null.");
-        }
-        if (contractType == null || (!"Construction".equals(contractType) && !"Maintenance".equals(contractType))) {
-            throw new ValidationException("Invalid contract type. It must be 'Construction' or 'Maintenance'.");
-        }
-
-        // Create the contract based on type
         Contract contract;
         if ("Construction".equals(contractType)) {
             contract = new ConstructionContract("Terms", project, client, 0, 0);
         } else {
             contract = new MaintenanceContract("Terms", project, client, 6, 1500);
         }
-
         contractRepository.add(contract);
         client.addContract(contract);
     }

@@ -1,12 +1,7 @@
 package ServiceLayer;
-
 import java.util.*;
-
-import Exceptions.BusinessLogicException;
-import Exceptions.ValidationException;
 import ModelLayer.Employee;
-import ModelLayer.Worker;
-import ModelLayer.Engineer;
+import ModelLayer.*;
 import RepositoryLayer.IRepository;
 
 public class EmployeeService {
@@ -24,11 +19,11 @@ public class EmployeeService {
      * Description: Gets all existent employees
      * @return Map with employees and their IDs
      */
-    public Map<Integer, Employee> getAllEmployees() {
-        Map<Integer, Employee> allEmployees = new HashMap<>();
+    public Map<Integer,Employee> getAllEmployees() {
+        Map<Integer,Employee> allEmployees = new HashMap<>();
 
         for (Employee employee : employeeRepository.getAll()) {
-            allEmployees.put(employeeRepository.getID(employee), employee);
+            allEmployees.put(employeeRepository.getID(employee),employee);
         }
         return allEmployees;
     }
@@ -37,12 +32,12 @@ public class EmployeeService {
      * Description: Gets all employees that are not allocated to a project
      * @return Map with employees and their IDs
      */
-    public Map<Integer, Employee> getUnallocatedEmployees() {
-        Map<Integer, Employee> unallocatedEmployees = new HashMap<>();
+    public Map<Integer,Employee> getUnallocatedEmployees() {
+        Map<Integer,Employee> unallocatedEmployees = new HashMap<>();
 
         for (Employee employee : employeeRepository.getAll()) {
             if (employee.getProjects().isEmpty()) {
-                unallocatedEmployees.put(employeeRepository.getID(employee), employee);
+                unallocatedEmployees.put(employeeRepository.getID(employee),employee);
             }
         }
         return unallocatedEmployees;
@@ -57,16 +52,6 @@ public class EmployeeService {
      * @param specialization
      */
     public void createEngineer(String lastName, String firstName, String role, float salary, String specialization) {
-        if (lastName == null || lastName.trim().isEmpty()) {
-            throw new ValidationException("Last name cannot be null or empty.");
-        }
-        if (firstName == null || firstName.trim().isEmpty()) {
-            throw new ValidationException("First name cannot be null or empty.");
-        }
-        if (salary <= 0) {
-            throw new ValidationException("Salary must be greater than 0.");
-        }
-
         Engineer newEngineer = new Engineer(lastName, firstName, role, salary, new ArrayList<>(), specialization);
         employeeRepository.add(newEngineer);
         System.out.println("Engineer created successfully: " + newEngineer.getFirstName() + " " + newEngineer.getLastName());
@@ -81,24 +66,14 @@ public class EmployeeService {
      * @param experienceLevel
      */
     public void createWorker(String lastName, String firstName, String role, float salary, String experienceLevel) {
-        if (lastName == null || lastName.trim().isEmpty()) {
-            throw new ValidationException("Last name cannot be null or empty.");
-        }
-        if (firstName == null || firstName.trim().isEmpty()) {
-            throw new ValidationException("First name cannot be null or empty.");
-        }
-        if (salary <= 0) {
-            throw new ValidationException("Salary must be greater than 0.");
-        }
-
         Worker newWorker = new Worker(lastName, firstName, role, salary, new ArrayList<>(), experienceLevel);
         employeeRepository.add(newWorker);
         System.out.println("Worker created successfully: " + newWorker.getFirstName() + " " + newWorker.getLastName());
     }
-
     /**
-     * Description: Sorts the workers by the experience level
-     * @return List of workers sorted by experience level
+     *
+     * @return
+    //Sorts the workes by the experience level
      */
     public List<Worker> sortEmployeesByExperience() {
         List<Worker> workers = new ArrayList<>();
@@ -107,12 +82,8 @@ public class EmployeeService {
                 workers.add((Worker) employee);
             }
         }
-
-        if (workers.isEmpty()) {
-            throw new BusinessLogicException("No workers available to sort by experience.");
-        }
-
         workers.sort((w1, w2) -> w2.getExperienceLevel().compareTo(w1.getExperienceLevel()));
         return workers;
     }
+
 }
