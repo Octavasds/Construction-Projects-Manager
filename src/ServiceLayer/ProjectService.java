@@ -1,15 +1,17 @@
 package ServiceLayer;
+
+import Exceptions.EntityNotFoundException;
+import Exceptions.ValidationException;
+import Exceptions.BusinessLogicException;
 import ModelLayer.*;
 import RepositoryLayer.DBRepository;
 import RepositoryLayer.IRepository;
-import ServiceLayer.*;
 
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
 public class ProjectService {
-    // Existing attributes
     private IRepository<Project> projectRepository;
     private IRepository<Employee> employeeRepository;
     private IRepository<Material> materialRepository;
@@ -24,7 +26,7 @@ public class ProjectService {
      * @param clientRepository
      * @param inventory
      */
-    public ProjectService(IRepository<Project> projectRepository, IRepository<Employee> employeeRepository, IRepository<Material> materialRepository, IRepository<Client> clientRepository,Inventory inventory) {
+    public ProjectService(IRepository<Project> projectRepository, IRepository<Employee> employeeRepository, IRepository<Material> materialRepository, IRepository<Client> clientRepository, Inventory inventory) {
         this.projectRepository = projectRepository;
         this.employeeRepository = employeeRepository;
         this.materialRepository = materialRepository;
@@ -37,11 +39,17 @@ public class ProjectService {
      * @param project
      */
     public void addProject(Project project) {
-        if (validateEmployeeAllocation(project.getEmployees()) && validateMaterialAllocation(project.getMaterials())) {
-            projectRepository.add(project);
-        } else {
-            System.out.println("Error: Could not allocate employees or materials for this project.");
+        if (project == null) {
+            throw new ValidationException("Project cannot be null.");
         }
+        if (!validateEmployeeAllocation(project.getEmployees())) {
+            throw new ValidationException("Employee allocation failed for the project.");
+        }
+        if (!validateMaterialAllocation(project.getMaterials())) {
+            throw new ValidationException("Material allocation failed for the project.");
+        }
+
+        projectRepository.add(project);
     }
 
     /**
@@ -50,9 +58,10 @@ public class ProjectService {
      */
     public void deleteProject(int projectId) {
         Project project = projectRepository.getById(projectId);
-        if (project != null) {
-            projectRepository.delete(project);
+        if (project == null) {
+            throw new EntityNotFoundException("Project with ID " + projectId + " not found.");
         }
+        projectRepository.delete(project);
     }
 
     /**
@@ -64,13 +73,11 @@ public class ProjectService {
         for (Employee employee : employees) {
             if (employee instanceof Engineer) {
                 if (!employee.getProjects().isEmpty()) {
-                    System.out.println("Error: Engineer already assigned to a project.");
-                    return false;
+                    throw new BusinessLogicException("Engineer already assigned to a project.");
                 }
             } else if (employee instanceof Worker) {
                 if (!employee.getProjects().isEmpty()) {
-                    System.out.println("Error: Worker already assigned to a project.");
-                    return false;
+                    throw new BusinessLogicException("Worker already assigned to a project.");
                 }
             }
         }
@@ -85,8 +92,7 @@ public class ProjectService {
     private boolean validateMaterialAllocation(List<Material> materials) {
         for (Material material : materials) {
             if (!inventory.hasMaterial(material)) {
-                System.out.println("Error: Insufficient material in inventory.");
-                return false;
+                throw new BusinessLogicException("Insufficient material in inventory.");
             }
         }
         return true;
@@ -103,17 +109,16 @@ public class ProjectService {
      */
     public void updateProject(int projectId, String name, String location, Date beginDate, Date finalDate, float budget) {
         Project project = projectRepository.getById(projectId);
-        if (project != null) {
-            project.setName(name);
-            project.setLocation(location);
-            project.setBeginDate(beginDate);
-            project.setFinalDate(finalDate);
-            project.setBudget(budget);
-            projectRepository.update(projectId, project);
-            System.out.println("Project updated successfully.");
-        } else {
-            System.out.println("Error: Project with ID " + projectId + " not found.");
+        if (project == null) {
+            throw new EntityNotFoundException("Project with ID " + projectId + " not found.");
         }
+
+        project.setName(name);
+        project.setLocation(location);
+        project.setBeginDate(beginDate);
+        project.setFinalDate(finalDate);
+        project.setBudget(budget);
+        projectRepository.update(projectId, project);
     }
 
     /**
@@ -125,39 +130,22 @@ public class ProjectService {
         Project project = projectRepository.getById(projectId);
         Employee employee = employeeRepository.getById(employeeId);
 
-        if (projectRepository instanceof DBRepository<Project>) {
-            String query = "INSERT INTO project_employees (project_id,employee_id) VALUES (?, ?)";
-            try {
-                Connection connection = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/project_management",
-                        "root",
-                        "2004"
-                );
+        if (project == null) {
+            throw new EntityNotFoundException("Project with ID " + projectId + " not found.");
+        }
 
-                try (PreparedStatement pstmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-                    pstmt.setInt(1, projectId);
-                    pstmt.setInt(2, employeeId);
-                    pstmt.executeUpdate();
-                }
-            }
-            catch(SQLException e){
-                throw new RuntimeException("Error connecting to the database: " + e.getMessage());
-            }
+        if (employee == null) {
+            throw new EntityNotFoundException("Employee with ID " + employeeId + " not found.");
         }
-        else
-        if (project != null && employee != null) {
-            if (employee.getProjects().isEmpty()) {
-                project.getEmployees().add(employee);
-                employee.getProjects().add(project);
-                employeeRepository.update(employeeId,employee);
-                projectRepository.update(projectId,project);
-                System.out.println("Employee allocated successfully.");
-            } else {
-                System.out.println("Error: Employee is already assigned to another project.");
-            }
-        } else {
-            System.out.println("Error: Project or Employee not found.");
+
+        if (!employee.getProjects().isEmpty()) {
+            throw new BusinessLogicException("Employee is already assigned to another project.");
         }
+
+        project.getEmployees().add(employee);
+        employee.getProjects().add(project);
+        employeeRepository.update(employeeId, employee);
+        projectRepository.update(projectId, project);
     }
 
     /**
@@ -169,17 +157,16 @@ public class ProjectService {
         Project project = projectRepository.getById(projectId);
         Employee employee = employeeRepository.getById(employeeId);
 
-        if (project != null && employee != null) {
-            if (project.getEmployees().remove(employee)) {
-                employee.getProjects().remove(project);
-                employeeRepository.update(employeeId,employee);
-                projectRepository.update(projectId,project);
-                System.out.println("Employee deallocated successfully.");
-            } else {
-                System.out.println("Error: Employee not assigned to this project.");
-            }
+        if (project == null || employee == null) {
+            throw new EntityNotFoundException("Project or Employee not found.");
+        }
+
+        if (project.getEmployees().remove(employee)) {
+            employee.getProjects().remove(project);
+            employeeRepository.update(employeeId, employee);
+            projectRepository.update(projectId, project);
         } else {
-            System.out.println("Error: Project or Employee not found.");
+            throw new BusinessLogicException("Employee is not assigned to this project.");
         }
     }
 
@@ -191,18 +178,17 @@ public class ProjectService {
     public void allocateMaterialsToProject(int projectId, List<Material> materials) {
         Project project = projectRepository.getById(projectId);
 
-        if (project != null) {
-            for (Material material : materials) {
-                if (inventory.hasMaterial(material)) {
-                    project.getMaterials().add(material);
-                    material.setQuantity(material.getQuantity() - 1); // Assuming quantity is reduced by 1 per allocation
-                    System.out.println("Material allocated: " + material.getName());
-                } else {
-                    System.out.println("Error: Insufficient material in inventory for " + material.getName());
-                }
+        if (project == null) {
+            throw new EntityNotFoundException("Project not found.");
+        }
+
+        for (Material material : materials) {
+            if (inventory.hasMaterial(material)) {
+                project.getMaterials().add(material);
+                material.setQuantity(material.getQuantity() - 1); // Assuming quantity is reduced by 1 per allocation
+            } else {
+                throw new BusinessLogicException("Insufficient material in inventory for " + material.getName());
             }
-        } else {
-            System.out.println("Error: Project not found.");
         }
     }
 
@@ -215,11 +201,10 @@ public class ProjectService {
         for (Material material : inventory.getMaterials()) {
             if (material.getName().equals(materialName)) {
                 material.setQuantity(material.getQuantity() + quantity);
-                System.out.println("Material inventory updated: " + materialName + " now has " + material.getQuantity() + " units.");
                 return;
             }
         }
-        System.out.println("Error: Material not found in inventory.");
+        throw new EntityNotFoundException("Material not found in inventory.");
     }
 
     /**
@@ -228,24 +213,21 @@ public class ProjectService {
      */
     public void generateProjectReport(int projectId) {
         Project project = projectRepository.getById(projectId);
-        if (project != null) {
-            System.out.println("Project Report: ");
-            System.out.println("Name: " + project.getName());
-            System.out.println("Location: " + project.getLocation());
-            System.out.println("Budget: " + project.getBudget());
-            System.out.println("Begin Date: " + project.getBeginDate());
-            System.out.println("Final Date: " + project.getFinalDate());
-            System.out.println("Client: " + project.getClient().getName());
-            System.out.println("Employees: ");
-            for (Employee employee : project.getEmployees()) {
-                System.out.println("- " + employee.getFirstName() + " " + employee.getLastName() + " (" + employee.getRole() + ")");
-            }
-            System.out.println("Materials: ");
-            for (Material material : project.getMaterials()) {
-                System.out.println("- " + material.getName() + " (Quantity: " + material.getQuantity() + ")");
-            }
-        } else {
-            System.out.println("Error: Project not found.");
+
+        if (project == null) {
+            throw new EntityNotFoundException("Project with ID " + projectId + " not found.");
+        }
+
+        System.out.println("Project Report:");
+        System.out.println("Name: " + project.getName());
+        System.out.println("Location: " + project.getLocation());
+        System.out.println("Budget: " + project.getBudget());
+        System.out.println("Begin Date: " + project.getBeginDate());
+        System.out.println("Final Date: " + project.getFinalDate());
+        System.out.println("Client: " + project.getClient().getName());
+        System.out.println("Employees: ");
+        for (Employee employee : project.getEmployees()) {
+            System.out.println("- " + employee.getFirstName() + " " + employee.getLastName());
         }
     }
 
@@ -254,10 +236,10 @@ public class ProjectService {
      * @return Map with projects and their IDs
      */
     public Map<Integer, Project> getAllProjects() {
-        Map<Integer,Project> projects = new HashMap<>();
+        Map<Integer, Project> projects = new HashMap<>();
 
         for (Project project : projectRepository.getAll()) {
-                projects.put(projectRepository.getID(project),project);
+            projects.put(projectRepository.getID(project), project);
         }
         return projects;
     }
@@ -270,19 +252,25 @@ public class ProjectService {
     public void allocateClientToProject(int projectId, int clientId) throws SQLException {
         Project project = projectRepository.getById(projectId);
         Client client = clientRepository.getById(clientId);
-        clientRepository.update(clientId,client);
-        if (project != null && client != null) {
-            project.setClient(client);
-            if(projectRepository instanceof DBRepository<Project>)
-                ((DBRepository<Project>) projectRepository).updateProject(projectId,project,clientId);
-            else
-                projectRepository.update(projectId, project);
-            System.out.println("Client " + client.getName() + " has been successfully allocated to project " + project.getName());
+
+        if (project == null || client == null) {
+            throw new EntityNotFoundException("Project or Client not found.");
+        }
+
+        project.setClient(client);
+        clientRepository.update(clientId, client);
+
+        if (projectRepository instanceof DBRepository<Project>) {
+            ((DBRepository<Project>) projectRepository).updateProject(projectId, project, clientId);
         } else {
-            System.out.println("Error: Project or Client not found.");
+            projectRepository.update(projectId, project);
         }
     }
-    //Sorts project by budget
+
+    /**
+     * Sorts projects by budget
+     * @return Sorted list of projects
+     */
     public List<Project> sortProjectsByBudget() {
         List<Project> projects = new ArrayList<>(projectRepository.getAll());
         projects.sort((p1, p2) -> Float.compare(p2.getBudget(), p1.getBudget()));
@@ -290,9 +278,9 @@ public class ProjectService {
     }
 
     /**
-     * Shows projects that have already begun from a specific date
+     * Filters projects by start date
      * @param minDate
-     * @return
+     * @return List of filtered projects
      */
     public List<Project> filterProjectsByStartDate(Date minDate) {
         List<Project> filteredProjects = new ArrayList<>();
@@ -309,15 +297,12 @@ public class ProjectService {
      * @param client
      * @param employee
      * @param project
-     * @return
+     * @return true if client and employee are on the same project
      */
     public boolean isClientAndEmployeeOnSameProject(Client client, Employee employee, Project project) {
-        // Verificăm dacă proiectul are atât clientul, cât și angajatul specificat
         boolean clientMatches = project.getClient() != null && project.getClient().equals(client);
         boolean employeeMatches = project.getEmployees().contains(employee);
 
         return clientMatches && employeeMatches;
     }
-
 }
-
