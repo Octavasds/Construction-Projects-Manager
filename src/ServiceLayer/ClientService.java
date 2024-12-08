@@ -1,4 +1,5 @@
 package ServiceLayer;
+import Exceptions.EntityNotFoundException;
 import ModelLayer.Client;
 import ModelLayer.Employee;
 import RepositoryLayer.IRepository;
@@ -25,21 +26,27 @@ public class ClientService {
      * @param email
      */
     public void createClient(String name, String address, String phone, String email) {
+        // Nu adăugăm validări aici, deoarece sunt gestionate în ControllerLayer.
         Client newClient = new Client(name, address, phone, email, new ArrayList<>());
         clientRepository.add(newClient);
-        System.out.println("Client created successfully: " + newClient.getName());
     }
 
     /**
      * Description: Gets all existent Clients
      * @return Map with all Clients and their IDs
+     * @throws EntityNotFoundException if no clients exist
      */
     public Map<Integer, Client> getAllClients() {
         Map<Integer, Client> allClients = new HashMap<>();
 
         for (Client client : clientRepository.getAll()) {
-            allClients.put(clientRepository.getID(client),client);
+            allClients.put(clientRepository.getID(client), client);
         }
+
+        if (allClients.isEmpty()) {
+            throw new EntityNotFoundException("No clients found.");
+        }
+
         return allClients;
     }
 }

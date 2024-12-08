@@ -1,5 +1,8 @@
 package ServiceLayer;
 import java.util.*;
+
+import Exceptions.BusinessLogicException;
+import Exceptions.EntityNotFoundException;
 import ModelLayer.Employee;
 import ModelLayer.*;
 import RepositoryLayer.IRepository;
@@ -18,28 +21,40 @@ public class EmployeeService {
     /**
      * Description: Gets all existent employees
      * @return Map with employees and their IDs
+     * @throws EntityNotFoundException if no employees exist
      */
-    public Map<Integer,Employee> getAllEmployees() {
-        Map<Integer,Employee> allEmployees = new HashMap<>();
+    public Map<Integer, Employee> getAllEmployees() {
+        Map<Integer, Employee> allEmployees = new HashMap<>();
 
         for (Employee employee : employeeRepository.getAll()) {
-            allEmployees.put(employeeRepository.getID(employee),employee);
+            allEmployees.put(employeeRepository.getID(employee), employee);
         }
+
+        if (allEmployees.isEmpty()) {
+            throw new EntityNotFoundException("No employees found.");
+        }
+
         return allEmployees;
     }
 
     /**
      * Description: Gets all employees that are not allocated to a project
      * @return Map with employees and their IDs
+     * @throws EntityNotFoundException if no unallocated employees exist
      */
-    public Map<Integer,Employee> getUnallocatedEmployees() {
-        Map<Integer,Employee> unallocatedEmployees = new HashMap<>();
+    public Map<Integer, Employee> getUnallocatedEmployees() {
+        Map<Integer, Employee> unallocatedEmployees = new HashMap<>();
 
         for (Employee employee : employeeRepository.getAll()) {
             if (employee.getProjects().isEmpty()) {
-                unallocatedEmployees.put(employeeRepository.getID(employee),employee);
+                unallocatedEmployees.put(employeeRepository.getID(employee), employee);
             }
         }
+
+        if (unallocatedEmployees.isEmpty()) {
+            throw new EntityNotFoundException("No unallocated employees found.");
+        }
+
         return unallocatedEmployees;
     }
 
@@ -54,7 +69,6 @@ public class EmployeeService {
     public void createEngineer(String lastName, String firstName, String role, float salary, String specialization) {
         Engineer newEngineer = new Engineer(lastName, firstName, role, salary, new ArrayList<>(), specialization);
         employeeRepository.add(newEngineer);
-        System.out.println("Engineer created successfully: " + newEngineer.getFirstName() + " " + newEngineer.getLastName());
     }
 
     /**
@@ -68,12 +82,12 @@ public class EmployeeService {
     public void createWorker(String lastName, String firstName, String role, float salary, String experienceLevel) {
         Worker newWorker = new Worker(lastName, firstName, role, salary, new ArrayList<>(), experienceLevel);
         employeeRepository.add(newWorker);
-        System.out.println("Worker created successfully: " + newWorker.getFirstName() + " " + newWorker.getLastName());
     }
+
     /**
-     *
-     * @return
-    //Sorts the workes by the experience level
+     * Sorts the workers by their experience level
+     * @return List of workers sorted by experience level
+     * @throws BusinessLogicException if no workers are available to sort
      */
     public List<Worker> sortEmployeesByExperience() {
         List<Worker> workers = new ArrayList<>();
@@ -82,8 +96,12 @@ public class EmployeeService {
                 workers.add((Worker) employee);
             }
         }
+
+        if (workers.isEmpty()) {
+            throw new BusinessLogicException("No workers available to sort by experience level.");
+        }
+
         workers.sort((w1, w2) -> w2.getExperienceLevel().compareTo(w1.getExperienceLevel()));
         return workers;
     }
-
 }
