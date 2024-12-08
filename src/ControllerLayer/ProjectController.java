@@ -4,6 +4,8 @@ import ModelLayer.Employee;
 import ModelLayer.Material;
 import ServiceLayer.*;
 import ModelLayer.Project;
+
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +49,11 @@ public class ProjectController {
     }
 
     public void allocateClientToProject(int projectId, int clientId){
-        projectService.allocateClientToProject(projectId,clientId);
+        try {
+            projectService.allocateClientToProject(projectId,clientId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
     // Method to update material inventory
     public void updateMaterialInventory(String materialName, int quantity) {

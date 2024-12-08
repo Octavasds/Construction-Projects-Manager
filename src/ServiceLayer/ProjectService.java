@@ -1,9 +1,12 @@
 package ServiceLayer;
 import ModelLayer.*;
+import RepositoryLayer.DBRepository;
 import RepositoryLayer.IRepository;
 import ServiceLayer.*;
 
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 public class ProjectService {
     // Existing attributes
@@ -122,6 +125,26 @@ public class ProjectService {
         Project project = projectRepository.getById(projectId);
         Employee employee = employeeRepository.getById(employeeId);
 
+        if (projectRepository instanceof DBRepository<Project>) {
+            String query = "INSERT INTO project_employees (project_id,employee_id) VALUES (?, ?)";
+            try {
+                Connection connection = DriverManager.getConnection(
+                        "jdbc:mysql://localhost:3306/project_management",
+                        "root",
+                        "2004"
+                );
+
+                try (PreparedStatement pstmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                    pstmt.setInt(1, projectId);
+                    pstmt.setInt(2, employeeId);
+                    pstmt.executeUpdate();
+                }
+            }
+            catch(SQLException e){
+                throw new RuntimeException("Error connecting to the database: " + e.getMessage());
+            }
+        }
+        else
         if (project != null && employee != null) {
             if (employee.getProjects().isEmpty()) {
                 project.getEmployees().add(employee);
@@ -244,13 +267,16 @@ public class ProjectService {
      * @param projectId
      * @param clientId
      */
-    public void allocateClientToProject(int projectId, int clientId) {
+    public void allocateClientToProject(int projectId, int clientId) throws SQLException {
         Project project = projectRepository.getById(projectId);
         Client client = clientRepository.getById(clientId);
         clientRepository.update(clientId,client);
         if (project != null && client != null) {
             project.setClient(client);
-            projectRepository.update(projectId, project);
+            if(projectRepository instanceof DBRepository<Project>)
+                ((DBRepository<Project>) projectRepository).updateProject(projectId,project,clientId);
+            else
+                projectRepository.update(projectId, project);
             System.out.println("Client " + client.getName() + " has been successfully allocated to project " + project.getName());
         } else {
             System.out.println("Error: Project or Client not found.");
