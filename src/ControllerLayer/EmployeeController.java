@@ -1,4 +1,5 @@
 package ControllerLayer;
+
 import Exceptions.ValidationException;
 import ModelLayer.Employee;
 import ModelLayer.Worker;
@@ -23,8 +24,14 @@ public class EmployeeController {
         if (lastName == null || lastName.trim().isEmpty()) {
             throw new ValidationException("Last name cannot be null or empty.");
         }
+        if (!lastName.matches("^[a-zA-Z -]+$")) {
+            throw new ValidationException("Last name can not contain special characters.");
+        }
         if (firstName == null || firstName.trim().isEmpty()) {
             throw new ValidationException("First name cannot be null or empty.");
+        }
+        if (!firstName.matches("^[a-zA-Z -]+$")) {
+            throw new ValidationException("First name can not contain special characters");
         }
         if (role == null || role.trim().isEmpty()) {
             throw new ValidationException("Role cannot be null or empty.");
@@ -44,8 +51,14 @@ public class EmployeeController {
         if (lastName == null || lastName.trim().isEmpty()) {
             throw new ValidationException("Last name cannot be null or empty.");
         }
+        if (!lastName.matches("^[a-zA-Z -]+$")) {
+            throw new ValidationException("Last name can not contain special characters");
+        }
         if (firstName == null || firstName.trim().isEmpty()) {
             throw new ValidationException("First name cannot be null or empty.");
+        }
+        if (!firstName.matches("^[a-zA-Z -]+$")) {
+            throw new ValidationException("First name can not contain special characters");
         }
         if (role == null || role.trim().isEmpty()) {
             throw new ValidationException("Role cannot be null or empty.");

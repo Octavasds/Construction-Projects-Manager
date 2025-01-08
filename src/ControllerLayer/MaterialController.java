@@ -14,8 +14,14 @@ public class MaterialController {
         if (name == null || name.trim().isEmpty()) {
             throw new ValidationException("Material name cannot be null or empty.");
         }
+        if (!name.matches("^[a-zA-Z0-9 .,-]+$")) {
+            throw new ValidationException("Material name contains invalid characters.");
+        }
         if (provider == null || provider.trim().isEmpty()) {
             throw new ValidationException("Provider cannot be null or empty.");
+        }
+        if (!provider.matches("^[a-zA-Z0-9 .,-]+$")) {
+            throw new ValidationException("Provider name contains invalid characters.");
         }
         if (quantity <= 0) {
             throw new ValidationException("Quantity must be greater than zero.");

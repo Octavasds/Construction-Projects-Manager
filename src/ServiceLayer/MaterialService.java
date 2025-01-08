@@ -23,7 +23,6 @@ public class MaterialService {
      * @throws BusinessLogicException if quantity or unitPrice are invalid
      */
     public void createMaterial(String name, String provider, int quantity, float unitPrice) {
-        // Logica specifică legată de valori invalide (în ServiceLayer, doar logica complexă)
         if (quantity <= 0) {
             throw new BusinessLogicException("Quantity must be greater than zero.");
         }

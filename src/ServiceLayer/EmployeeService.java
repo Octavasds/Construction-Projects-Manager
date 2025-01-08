@@ -1,6 +1,6 @@
 package ServiceLayer;
-import java.util.*;
 
+import java.util.*;
 import Exceptions.BusinessLogicException;
 import Exceptions.EntityNotFoundException;
 import ModelLayer.Employee;
@@ -65,8 +65,17 @@ public class EmployeeService {
      * @param role
      * @param salary
      * @param specialization
+     * @throws BusinessLogicException if an employee with the same name and role already exists
      */
     public void createEngineer(String lastName, String firstName, String role, float salary, String specialization) {
+        for (Employee employee : employeeRepository.getAll()) {
+            if (employee.getLastName().equalsIgnoreCase(lastName) &&
+                    employee.getFirstName().equalsIgnoreCase(firstName) &&
+                    employee.getRole().equalsIgnoreCase(role)) {
+                throw new BusinessLogicException("An engineer with the same name and role already exists.");
+            }
+        }
+
         Engineer newEngineer = new Engineer(lastName, firstName, role, salary, new ArrayList<>(), specialization);
         employeeRepository.add(newEngineer);
     }
@@ -78,8 +87,17 @@ public class EmployeeService {
      * @param role
      * @param salary
      * @param experienceLevel
+     * @throws BusinessLogicException if an employee with the same name and role already exists
      */
     public void createWorker(String lastName, String firstName, String role, float salary, String experienceLevel) {
+        for (Employee employee : employeeRepository.getAll()) {
+            if (employee.getLastName().equalsIgnoreCase(lastName) &&
+                    employee.getFirstName().equalsIgnoreCase(firstName) &&
+                    employee.getRole().equalsIgnoreCase(role)) {
+                throw new BusinessLogicException("A worker with the same name and role already exists.");
+            }
+        }
+
         Worker newWorker = new Worker(lastName, firstName, role, salary, new ArrayList<>(), experienceLevel);
         employeeRepository.add(newWorker);
     }

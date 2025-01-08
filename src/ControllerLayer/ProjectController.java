@@ -24,8 +24,34 @@ public class ProjectController {
         if (project == null) {
             throw new ValidationException("Project cannot be null.");
         }
+        if (project.getName() == null || project.getName().trim().isEmpty()) {
+            throw new ValidationException("Project name cannot be null or empty.");
+        }
+        if (!project.getName().matches("^[a-zA-Z0-9 .,-]+$")) {
+            throw new ValidationException("Project name contains invalid characters.");
+        }
+        if (project.getLocation() == null || project.getLocation().trim().isEmpty()) {
+            throw new ValidationException("Project location cannot be null or empty.");
+        }
+        if (!project.getLocation().matches("^[a-zA-Z0-9 .,-]+$")) {
+            throw new ValidationException("Project location contains invalid characters.");
+        }
+        if (project.getBeginDate() == null || project.getFinalDate() == null) {
+            throw new ValidationException("Begin date and final date cannot be null.");
+        }
+        if (project.getBeginDate().after(project.getFinalDate())) {
+            throw new ValidationException("Begin date must be before or equal to the final date.");
+        }
+        if (project.getBeginDate().before(new Date())) {
+            throw new ValidationException("Begin date cannot be in the past.");
+        }
+        if (project.getBudget() <= 0) {
+            throw new ValidationException("Budget must be greater than zero.");
+        }
+
         projectService.addProject(project);
     }
+
 
     public void deleteProject(int projectId) {
         if (projectId <= 0) {
@@ -41,14 +67,23 @@ public class ProjectController {
         if (name == null || name.trim().isEmpty()) {
             throw new ValidationException("Project name cannot be null or empty.");
         }
+        if (!name.matches("^[a-zA-Z0-9 .,-]+$")) {
+            throw new ValidationException("Project name contains invalid characters.");
+        }
         if (location == null || location.trim().isEmpty()) {
             throw new ValidationException("Project location cannot be null or empty.");
+        }
+        if (!location.matches("^[a-zA-Z0-9 .,-]+$")) {
+            throw new ValidationException("Project location contains invalid characters.");
         }
         if (beginDate == null || finalDate == null) {
             throw new ValidationException("Begin date and final date cannot be null.");
         }
         if (beginDate.after(finalDate)) {
             throw new ValidationException("Begin date must be before or equal to the final date.");
+        }
+        if (beginDate.before(new Date())) {
+            throw new ValidationException("Begin date cannot be in the past.");
         }
         if (budget <= 0) {
             throw new ValidationException("Budget must be greater than zero.");
