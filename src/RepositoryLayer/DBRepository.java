@@ -45,7 +45,7 @@ public class DBRepository<T> implements IRepository<T> {
     }
 
     // Maps a database row to an entity
-    @SuppressWarnings("unchecked")
+
     private T mapEntity(ResultSet rs) throws SQLException {
         switch (tableName.toLowerCase()) {
             case "employees":
@@ -97,7 +97,7 @@ public class DBRepository<T> implements IRepository<T> {
     private Project mapProject(ResultSet rs) throws SQLException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-        // Map basic project details
+
         String name = rs.getString("name");
         String location = rs.getString("location");
         Date beginDate = null, finalDate = null;
@@ -111,7 +111,6 @@ public class DBRepository<T> implements IRepository<T> {
 
         float budget = rs.getFloat("budget");
 
-        // Get associated client
         int clientId = rs.getInt("client_id");
         Client client = null;
         if (clientId != 0) {
@@ -135,7 +134,6 @@ public class DBRepository<T> implements IRepository<T> {
             }
         }
 
-        // Return the constructed Project
         return new Project(name, location, beginDate, finalDate, budget, client, employees, new ArrayList<>());
     }
 

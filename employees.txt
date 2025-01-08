@@ -1,4 +1,4 @@
-0;Andrei,Marin,tehnician,4000.0,3
+0;Andrei,Marin,tehnician,4000.0,316
 1;Ion,Preda,zidar,49999.0,1
 2;Ana,Maria,electrica,200.0,2
 3;Adjdakf,asffcas,ddsf,232.0,gwf

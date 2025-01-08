@@ -24,7 +24,7 @@ public class ConsoleApp {
     public void run() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("1. Add Project\n2. Delete Project\n3. Update Project\n4. Allocate Employee\n5. Deallocate Employee\n6. Allocate Materials\n7. Update Material Inventory\n8. Generate Project Report\n9. Show Unallocated Employees\n10. Create Contract\n11. Create Client\n12. Create Material\n13. Create Engineer\n14. Create Worker\n15. Show All Projects\n16. Show All Employees\n17. Allocate Client\n18. Show Clients\n19. Sort projects by price\n20. Sort workers by experience level\n21. Filter project by date\n22. Check if client and employee are on the same project \n23. Exit");
+            System.out.println("1. Add Project\n2. Delete Project\n3. Update Project\n4. Allocate Employee\n5. Deallocate Employee\n8. Generate Project Report\n9. Show Unallocated Employees\n11. Create Client\n13. Create Engineer\n14. Create Worker\n15. Show All Projects\n16. Show All Employees\n17. Allocate Client\n18. Show Clients\n19. Sort projects by price\n20. Sort workers by experience level\n21. Filter project by date\n22. Check if client and employee are on the same project \n23. Exit");
             int choice = scanner.nextInt();
 
             switch (choice) {
@@ -90,25 +90,6 @@ public class ConsoleApp {
                     projectController.deallocateEmployeeFromProject(projectIdToDeallocate, employeeIdToDeallocate);
                     break;
 
-                case 6:
-                    // Allocate Materials
-                    System.out.println("Enter project ID:");
-                    int projectIdForMaterials = scanner.nextInt();
-                    scanner.nextLine();
-                    List<Material> materialsToAllocate = new ArrayList<>();
-                    projectController.allocateMaterialsToProject(projectIdForMaterials, materialsToAllocate);
-                    break;
-
-                case 7:
-                    // Update Material Inventory
-                    scanner.nextLine();
-                    System.out.println("Enter material name:");
-                    String materialNameToUpdate = scanner.nextLine();
-                    System.out.println("Enter quantity to add:");
-                    int quantityToAdd = scanner.nextInt();
-                    projectController.updateMaterialInventory(materialNameToUpdate, quantityToAdd);
-                    break;
-
                 case 8:
                     // Generate Project Report
                     System.out.println("Enter project ID to generate report:");
@@ -125,10 +106,6 @@ public class ConsoleApp {
                     }
                     break;
 
-                case 10:
-                    // Create Contract
-                    break;
-
                 case 11:
                     // Create Client
                     scanner.nextLine();
@@ -141,20 +118,6 @@ public class ConsoleApp {
                     System.out.println("Enter client email:");
                     String clientEmail = scanner.nextLine();
                     clientController.createClient(clientName, clientAddress, clientPhone, clientEmail);
-                    break;
-
-                case 12:
-                    // Create Material
-                    scanner.nextLine();
-                    System.out.println("Enter material name:");
-                    String materialName = scanner.nextLine();
-                    System.out.println("Enter provider:");
-                    String materialProvider = scanner.nextLine();
-                    System.out.println("Enter quantity:");
-                    int materialQuantity = scanner.nextInt();
-                    System.out.println("Enter unit price:");
-                    float materialPrice = scanner.nextFloat();
-                    materialController.createMaterial(materialName, materialProvider, materialQuantity, materialPrice);
                     break;
 
                 case 13:
